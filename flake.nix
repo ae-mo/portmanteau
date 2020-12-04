@@ -21,14 +21,14 @@
             pyportfolioopt
             pytest
           '';
+        providers = {
+            scs = "nixpkgs";
+        };
       in rec
       {
 
         devShell = mach-nix-utils.mkPythonShell {
           inherit requirements;
-          providers = {
-            alsa-lib = "nixpkgs";
-          };
         };
 
         packages.portmanteau = mach-nix-utils.mkPython {
