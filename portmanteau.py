@@ -1,14 +1,19 @@
 import click
 import pandas as pd
 import pandas_datareader as web
+import sys
+if not sys.warnoptions:
+    import warnings
+    warnings.simplefilter("ignore")
+
 from pypfopt import EfficientFrontier
 from pypfopt import risk_models
 from pypfopt import expected_returns
 
 @click.command()
-def cli():
+@click.argument('tickers', nargs=-1, required=True)
+def cli(tickers):
     # Read in price data
-    tickers = ['BSX','AES','BRK-B','SEE','QQQ','SPY']
     thelen = len(tickers)
     price_data = []
     for ticker in range(thelen):
