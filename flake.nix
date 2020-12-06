@@ -19,6 +19,7 @@
         };
         requirements = ''
             click
+            pandas-datareader
             pip
             pyportfolioopt
             pytest
