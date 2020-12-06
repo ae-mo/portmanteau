@@ -12,27 +12,32 @@
   outputs = { self, nixpkgs, mach-nix, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = (import nixpkgs { inherit system; config.allowUnsupportedSystem = true; }).pkgs;
+        pkgs = (import nixpkgs { inherit system; }).pkgs;
         mach-nix-utils = import mach-nix {
           inherit pkgs;
           python = "python3";
         };
         requirements = ''
+            click
+            pip
             pyportfolioopt
             pytest
+            setuptools
           '';
         providers = {
-            scs = "nixpkgs";
+          scs = "nixpkgs";
         };
       in rec
       {
 
         devShell = mach-nix-utils.mkPythonShell {
           inherit requirements;
+          inherit providers;
         };
 
         packages.portmanteau = mach-nix-utils.mkPython {
           inherit requirements;
+          inherit providers;
         };
 
         defaultPackage = packages.portmanteau;
