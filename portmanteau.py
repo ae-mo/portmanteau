@@ -30,6 +30,8 @@ def cli(risk_free_rate, start, span, verbose, tickers):
                 click.echo(prices)
             price_data.append(prices.assign(ticker=ticker)[['Adj Close']])
             successful_tickers.append(tickers[ticker])
+        except:
+            pass
     
     df = pd.concat(price_data, axis=1)
     df.columns=successful_tickers
