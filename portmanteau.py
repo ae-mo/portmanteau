@@ -11,13 +11,21 @@ from pypfopt import risk_models
 from pypfopt import expected_returns
 
 @click.command()
+@click.option('-r', '--risk-free-rate', default=0.02)
+@click.option('-s', '--start', default='2011-01-01')
+@click.option('-S', '--span', default=252*5)
+@click.option('-v', '--verbose', count=True)
 @click.argument('tickers', nargs=-1, required=True)
-def cli(tickers):
+def cli(risk_free_rate, start, span, verbose, tickers):
     # Read in price data
     thelen = len(tickers)
     price_data = []
     for ticker in range(thelen):
-        prices = web.DataReader(tickers[ticker], start='2015-01-01', end = '2020-06-06', data_source='yahoo')
+        click.echo(tickers[ticker])
+        prices = web.DataReader(tickers[ticker], start=start, data_source='yahoo')
+        if verbose >= 1:
+          click.echo(tickers[ticker] + ':')
+          click.echo(prices)
         price_data.append(prices.assign(ticker=ticker)[['Adj Close']])
     
     df = pd.concat(price_data, axis=1)
@@ -29,12 +37,12 @@ def cli(tickers):
     print(nullin_df.isnull().sum())
 
     # Calculate expected returns and sample covariance
-    mu = expected_returns.mean_historical_return(df)
+    mu = expected_returns.ema_historical_return(df, span=span)
     S = risk_models.sample_cov(df)
 
     # Optimise for maximal Sharpe ratio
-    ef = EfficientFrontier(mu, S, weight_bounds=(-1,1)) #weight bounds in negative allows shorting of stocks
-    raw_weights = ef.max_sharpe()
+    ef = EfficientFrontier(mu, S) #weight bounds in negative allows shorting of stocks
+    raw_weights = ef.max_sharpe(risk_free_rate=risk_free_rate)
     cleaned_weights = ef.clean_weights()
     click.echo(cleaned_weights)
     ef.portfolio_performance(verbose=True)
