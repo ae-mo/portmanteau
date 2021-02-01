@@ -20,16 +20,19 @@ def cli(risk_free_rate, start, span, verbose, tickers):
     # Read in price data
     thelen = len(tickers)
     price_data = []
+    successful_tickers = []
     for ticker in range(thelen):
         click.echo(tickers[ticker])
-        prices = web.DataReader(tickers[ticker], start=start, data_source='yahoo')
-        if verbose >= 1:
-          click.echo(tickers[ticker] + ':')
-          click.echo(prices)
-        price_data.append(prices.assign(ticker=ticker)[['Adj Close']])
+        try:
+            prices = web.DataReader(tickers[ticker], start=start, data_source='yahoo')
+            if verbose >= 1:
+                click.echo(tickers[ticker] + ':')
+                click.echo(prices)
+            price_data.append(prices.assign(ticker=ticker)[['Adj Close']])
+            successful_tickers.append(tickers[ticker])
     
     df = pd.concat(price_data, axis=1)
-    df.columns=tickers
+    df.columns=successful_tickers
     df.head()
 
     #Checking if any NaN values in the data
