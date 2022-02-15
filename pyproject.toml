@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "portmanteau"
+version = "0.1.0"
+description = "Portfolio manager to ease any unease"
+authors = ["ae-mo <morciano.andrea92@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+click = "^8.0.3"
+pandas = "^1.4.1"
+pandas-datareader = "^0.10.0"
+pyportfolioopt = "^1.5.1"
+yfinance = "^0.1.70"
+requests-cache = "^0.9.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+portmanteau = 'portmanteau:cli'
