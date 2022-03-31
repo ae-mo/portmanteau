@@ -30,7 +30,7 @@ def cli(risk_free_rate, start, span, verbose, files, tickers):
     try:
       for file in files:
         lines = file.readlines()
-        lines = [line.strip() for line in lines]
+        lines = [line.strip() for line in lines if not line.strip().startswith("#")]
         tickers = tickers + tuple(lines)
     except:
       pass
